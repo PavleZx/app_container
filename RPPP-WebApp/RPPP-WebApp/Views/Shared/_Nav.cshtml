@@ -1,0 +1,93 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" asp-action="Index" asp-controller="Home">RPPP Homework - Group 08</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" asp-action="Index" asp-controller="Home">Home</a>
+        </li>
+         <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Boris Milicevic
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li>
+              <a class="dropdown-item" asp-controller="Enclosure" asp-action="Index">Enclosure (Master)</a>
+            </li>
+            <li>
+              <a class="dropdown-item" asp-controller="IndividualAnimals" asp-action="Index">IndividualAnimals (Detail)</a>
+            </li>          
+          </ul>
+        </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Kacper Malak
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li>
+                        <a class="dropdown-item" asp-controller="Worker" asp-action="Index">Worker (Master)</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-controller="Competence" asp-action="Index">Competence (Detail)</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Wiktor Gorka
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li>
+                        <a class="dropdown-item" asp-controller="IncidentReport" asp-action="Index">IncidentReport (Master)</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-controller="Affects" asp-action="Index">Affects (Detail)</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Krzysztof Witucki
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li>
+                        <a class="dropdown-item" asp-controller="VisitGroup" asp-action="Index">Visit group (Master)</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-controller="GroupGuide" asp-action="Index">Guide (Detail)</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle"href="#"id="navbarDropdown"role="button"data-bs-toggle="dropdown"
+                aria-expanded="false">
+                    Pavle Žuljević
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li>
+                        <a class="dropdown-item" asp-controller="Task" asp-action="Index"> Task (Master)</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-controller="Expense" asp-action="Index">Expense (Detail)
+                        </a>
+                    </li>
+                </ul>
+            </li>
+                <a class="nav-link" asp-controller="SystemLog" asp-action="Index">
+                    Logs
+                </a>
+
+
+      </ul>
+
+    </div>
+  </div>
+</nav>

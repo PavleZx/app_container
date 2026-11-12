@@ -1,0 +1,234 @@
+﻿@model RPPP_WebApp.ViewModels.WorkerCompetenceMasterDetail
+
+<h1>Worker details</h1>
+<a asp-controller="Worker" asp-action="Index" class="btn btn-primary">Back to Workers</a>
+<br />
+<div class="card mb-4">
+    <div class="card-header">
+        <h3>Worker information</h3>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="MasterDetailEdit"
+              method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="Worker.WorkerId" />
+
+
+            <div class="form-group">
+                <label asp-for="Worker.Name"></label>
+                <input asp-for="Worker.Name" class="form-control" />
+                <span asp-validation-for="Worker.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Worker.Surname"></label>
+                <input asp-for="Worker.Surname" class="form-control" />
+                <span asp-validation-for="Worker.Surname" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Worker.Email"></label>
+                <input asp-for="Worker.Email" class="form-control" />
+                <span asp-validation-for="Worker.Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Worker.Phone"></label>
+                <input asp-for="Worker.Phone" class="form-control" />
+                <span asp-validation-for="Worker.Phone" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Worker.AvailabilityId">Availability</label>
+                <select asp-for="Worker.AvailabilityId"
+                        asp-items="Model.AvailabilityList"
+                        class="form-control">
+                    <option value="">-- select availability --</option>
+                </select>
+                <span asp-validation-for="Worker.AvailabilityId" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+        <form asp-action="Delete" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="workerID" value="@Model.Worker.WorkerId" />
+
+            <button type="submit" class="btn btn-danger delete">
+                Delete worker
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Worker's competences</h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="SaveCompetencesBatch" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="WorkerId" value="@Model.Worker.WorkerId" />
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Expiry date</th>
+                        <th>Certificate</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @for (int i = 0; i < Model.Competences.Count; i++)
+                    {
+                        <tr class="competence-row">
+                            <td>
+                                @Model.Competences[i].CompetenceId
+                                <input type="hidden" asp-for="Competences[i].CompetenceId" />
+                                <input type="hidden" asp-for="Competences[i].WorkerId" />
+                                <input type="hidden"
+                                        asp-for="Competences[i].IsDeleted"
+                                        class="is-deleted-flag" />
+                            </td>
+
+                            <td>
+                                <input asp-for="Competences[i].Name"
+                                        class="form-control form-control-sm" />
+                                <span asp-validation-for="Competences[i].Name"
+                                        class="text-danger"></span>
+                            </td>
+
+                            <td>
+                                <input asp-for="Competences[i].Description"
+                                        class="form-control form-control-sm" />
+                                <span asp-validation-for="Competences[i].Description" class="text-danger"></span>
+                            </td>
+
+                            <td>
+                                <input asp-for="Competences[i].ExpiryDate"
+                                        type="date"
+                                        class="form-control form-control-sm" />
+                                <span asp-validation-for="Competences[i].ExpiryDate"
+                                        class="text-danger"></span>
+                            </td>
+
+                            <td>
+                                <select asp-for="Competences[i].CertificateId"
+                                        asp-items="ViewBag.CertificateList"
+                                        class="form-control form-control-sm">
+                                    <option value="">-- select --</option>
+                                </select>
+                            </td>
+
+                            <td>
+                                <button type="button"
+                                        class="btn btn-danger btn-sm delete-row">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <button type="submit" class="btn btn-success me-2">
+                Save all changes
+            </button>
+
+            <button type="button"
+                    id="add-competence"
+                    class="btn btn-primary">
+                Add competence
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+<script type="text/template" id="new-competence-template">
+    <tr class="competence-row">
+        <td>
+            NEW
+            <input type="hidden" name="Competences[__i__].CompetenceId" value="0" />
+            <input type="hidden" name="Competences[__i__].WorkerId" value="@Model.Worker.WorkerId" />
+            <input type="hidden" name="Competences[__i__].IsDeleted" value="false" class="is-deleted-flag" />
+        </td>
+
+        <td>
+            <input name="Competences[__i__].Name"
+                   class="form-control form-control-sm" />
+        </td>
+
+        <td>
+            <input name="Competences[__i__].Description"
+                   class="form-control form-control-sm" />
+        </td>
+
+        <td>
+            <input name="Competences[__i__].ExpiryDate"
+                   type="date"
+                   class="form-control form-control-sm" />
+        </td>
+
+        <td>
+            <select name="Competences[__i__].CertificateId"
+                    class="form-control form-control-sm">
+                <option value="">-- select --</option>
+                @foreach (var cert in ViewBag.CertificateList)
+                {
+                        <option value="@cert.Value">@cert.Text</option>
+                }
+            </select>
+        </td>
+
+        <td>
+            <button type="button"
+                    class="btn btn-danger btn-sm delete-row">
+                Delete
+            </button>
+        </td>
+    </tr>
+</script>
+
+
+<script>
+    document.addEventListener("click", function (e) {
+        if (!e.target.classList.contains("delete-row")) return;
+
+        const row = e.target.closest(".competence-row");
+
+        const idInput = row.querySelector('input[name$=".CompetenceId"]');
+        const isNew = idInput && idInput.value === "0";
+
+        if (isNew) {
+            row.remove();
+            return;
+        }
+
+        const flag = row.querySelector(".is-deleted-flag");
+        flag.value = "true";
+        row.style.display = "none";
+    });
+</script>
+
+<script>
+    document.getElementById("add-competence").addEventListener("click", function () {
+        const tbody = document.querySelector("table tbody");
+        const template = document.getElementById("new-competence-template").innerHTML;
+
+        const index = tbody.querySelectorAll("tr").length;
+        const rowHtml = template.replaceAll("__i__", index);
+
+        tbody.insertAdjacentHTML("beforeend", rowHtml);
+    });
+</script>
+

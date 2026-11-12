@@ -1,0 +1,23 @@
+@model RPPP_WebApp.ViewModels.ExpenseDetailsViewModel
+
+<h2>Expense Detail</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Type</dt>
+    <dd class="col-sm-9">@Model.Type</dd>
+
+    <dt class="col-sm-3">Arrival Date</dt>
+    <dd class="col-sm-9">@Model.ArrivalDate</dd>
+
+    <dt class="col-sm-3">Description</dt>
+    <dd class="col-sm-9">@Model.Description</dd>
+
+    <dt class="col-sm-3">Price</dt>
+    <dd class="col-sm-9">@Model.PriceAmount</dd>
+</dl>
+
+<a asp-controller="Task"
+   asp-action="MasterDetail"
+   asp-route-id="@Model.TaskID">
+    Back to Task
+</a>

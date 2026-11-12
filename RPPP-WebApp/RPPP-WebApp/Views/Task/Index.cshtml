@@ -1,0 +1,101 @@
+@model RPPP_WebApp.ViewModels.TaskIndexViewModel
+
+@{
+    ViewData["Title"] = "Tasks";
+}
+
+<h2>Tasks</h2>
+
+<a asp-action="Create"
+   class="btn btn-primary"
+   asp-route-page="@Model.PagingInfo.CurrentPage"
+   asp-route-sort="@Model.PagingInfo.Sort"
+   asp-route-ascending="@Model.PagingInfo.Ascending">
+    Create New Task
+</a>
+
+<a asp-action="ExportAllTasksPdf" class="btn btn-danger">
+    Download Full PDF Report
+</a>
+
+<a asp-action="ExportToExcel"
+   class="btn btn-success">
+    Export data to Excel
+</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sort="2"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 2 ? !Model.PagingInfo.Ascending : true)">
+                    Start
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sort="3"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 3 ? !Model.PagingInfo.Ascending : true)">
+                    End
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sort="4"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 4 ? !Model.PagingInfo.Ascending : true)">
+                    Enclosure
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sort="5"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 5 ? !Model.PagingInfo.Ascending : true)">
+                    Type
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index"
+                   asp-route-sort="6"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 6 ? !Model.PagingInfo.Ascending : true)">
+                    Status
+                </a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Tasks)
+{
+        <tr>
+            <td>@item.TimeStart</td>
+            <td>@item.TimeEnd</td>
+            <td>@item.EnclosureName</td>
+            <td>@item.TypeName</td>
+            <td>@item.StatusName</td>
+            <td>
+            <a asp-action="MasterDetail"
+            asp-route-id="@item.TaskID" class="btn btn-info" title="Details">
+                Details
+            </a> 
+            <a asp-action="Edit"
+            asp-route-id="@item.TaskID" class="btn btn-warning" title="Edit">
+                Edit
+            </a> 
+            <form asp-action="Delete"
+                asp-route-id="@item.TaskID"
+                method="post"
+                style="display:inline"
+                onsubmit="return confirm('Are you sure you want to delete this task?');">
+                <button type="submit" class="btn btn-danger delete">
+                    Delete
+                </button>
+            </form>
+        </td>
+
+        </tr>
+}
+    </tbody>
+</table>
+
+<partial name="_Paging" model="Model.PagingInfo" />

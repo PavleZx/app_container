@@ -1,0 +1,187 @@
+@model RPPP_WebApp.ViewModels.TaskDetailsViewModel
+
+@{
+    ViewData["Title"] = "Task Master-Detail View";
+}
+
+<form asp-action="SaveExpensesBatch" method="post">
+
+<input type="hidden" asp-for="Task.TaskID" />
+<input type="hidden" asp-for="Task.EnclosureID" />
+<input type="hidden" asp-for="Task.TypeID" />
+<input type="hidden" asp-for="Task.StatusID" />
+
+<table class="table table-sm table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th colspan="3">
+                            <div class="card-header">
+                                <h3>Task Information (#@Model.Task.TaskID)</h3>
+
+                                <div class="form-group mt-2">
+                                    <input type="submit"
+                                        value="Save Changes"
+                                        class="btn btn-primary" />
+
+                                    <a asp-action="Index"
+                                    class="btn btn-primary ms-2">
+                                        Back
+                                    </a>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+
+                <!-- ROW 1 (3 columns) -->
+                <tr>
+                    <th>
+                        <div class="form-group">
+                            <label class="control-label fw-bold">Start</label>
+                            <input asp-for="Task.TimeStart"
+                                type="date"
+                                class="form-control" />
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="form-group">
+                            <label class="control-label fw-bold">End</label>
+                            <input asp-for="Task.TimeEnd"
+                                type="date"
+                                class="form-control" />
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="form-group">
+                            <label class="control-label fw-bold">Notes</label>
+                            <input asp-for="Task.Notes"
+                                class="form-control" />
+                        </div>
+                    </th>
+                </tr>
+
+                <!-- ROW 2 (3 columns) -->
+                <tr>
+                    <th>
+                        <div class="form-group">
+                            <label class="control-label fw-bold">Enclosure</label>
+                            <input id="enclosure-search"
+                                class="form-control"
+                                value="@Model.Task.EnclosureName" />
+                            <input type="hidden"
+                                asp-for="Task.EnclosureID" />
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="form-group">
+                            <label class="control-label fw-bold">Type</label>
+                            <input id="type-search"
+                                class="form-control"
+                                value="@Model.Task.TypeName" />
+                            <input type="hidden"
+                                asp-for="Task.TypeID" />
+                        </div>
+                    </th>
+
+                    <th>
+                        <div class="form-group">
+                            <label class="control-label fw-bold">Status</label>
+                            <input id="status-search"
+                                class="form-control"
+                                value="@Model.Task.StatusName" />
+                            <input type="hidden"
+                                asp-for="Task.StatusID" />
+                        </div>
+                    </th>
+                </tr>
+            </table>
+
+<h5 class="mb-3 fw-bold">Expenses</h5>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-3 fw-bold">Expenses</h5>
+    </div>
+    
+    <div class="card-body">
+        <table class="table table-sm">
+            <thead>
+                 <tr>
+                    <th style="width:120px">Type</th>
+                    <th>Description</th>
+                    <th style="width:130px">Date</th>
+                    <th style="width:180px">Price</th>
+                    <th class="text-center" style="width:80px">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Expenses.Count; i++)
+                {
+                        <tr>
+                            <td>
+                                <input asp-for="Expenses[i].Type"
+                                    class="form-control form-control-sm" />
+                            </td>
+
+                            <td>
+                                <input asp-for="Expenses[i].Description"
+                                    class="form-control form-control-sm" />
+                            </td>
+
+                            <td>
+                                <input asp-for="Expenses[i].ArrivalDate"
+                                    type="date"
+                                    class="form-control form-control-sm" />
+                            </td>
+
+                            <td>
+                                <input asp-for="Expenses[i].PriceName"
+                                    class="form-control form-control-sm" />
+                                <input type="hidden"
+                                    asp-for="Expenses[i].PriceId" />
+                            </td>
+
+                            <td class="text-center">
+                                <input asp-for="Expenses[i].IsDeleted"
+                                    class="form-check-input" />
+                            </td>
+
+                            <!-- required hidden fields -->
+                            <input type="hidden" asp-for="Expenses[i].ExpenseID" />
+                            <input type="hidden" asp-for="Expenses[i].TaskId" />
+                        </tr>
+                }
+            </tbody>
+            
+        </table>
+        <input type="submit"
+                    value="Save Changes"
+                    class="btn btn-primary" />
+</form>
+
+        
+        <form asp-action="AddExpense" method="post" class="d-inline">
+            <input type="hidden"
+                name="taskId"
+                value="@Model.Task.TaskID" />
+
+            <button type="submit"
+                    class="btn btn-success">
+                Add
+            </button>
+
+            <div class="form-group mt-2">
+                <a asp-action="Index"
+                class="btn btn-primary ms-2">
+                    Back
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+

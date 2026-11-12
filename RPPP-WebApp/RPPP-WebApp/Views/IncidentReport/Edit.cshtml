@@ -1,0 +1,83 @@
+﻿@model RPPP_WebApp.Model.IncidentReport
+
+@{
+    ViewData["Title"] = "Edit Incident Report";
+}
+
+@section Scripts {
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const typeData = @Json.Serialize(((SelectList)ViewBag.IncidentTypeList).Select(t => new { label = t.Text, value = t.Value }));
+
+            $("#type-search").autocomplete({
+                minLength: 0,
+                source: function(request, response) {
+                    const term = request.term.toLowerCase();
+                    const filtered = typeData.filter(item => item.label.toLowerCase().includes(term));
+                    response(filtered);
+                },
+                select: function(event, ui) {
+                    $(this).val(ui.item.label);
+                    $("#type-id").val(ui.item.value);
+                    return false;
+                }
+            })
+            .focus(function () { $(this).autocomplete("search", ""); })
+            .on("input", function() { if ($(this).val() === "") $("#type-id").val(""); });
+        });
+    </script>
+}
+
+<h2>Edit Incident Report (#@Model.ReportID)</h2>
+
+<form asp-action="Edit"
+      asp-route-id="@Model.ReportID"
+      asp-route-returnUrl="@ViewBag.ReturnUrl"
+      method="post">
+    
+    @Html.AntiForgeryToken()
+    
+    <input type="hidden" asp-for="ReportID" name="Report.ReportID" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group mb-3">
+        <label asp-for="DateReport" class="control-label">Date Reported</label>
+        <input asp-for="DateReport" name="Report.DateReport" class="form-control" type="date" />
+        <span asp-validation-for="DateReport" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="DateSolved" class="control-label">Date Solved</label>
+        <input asp-for="DateSolved" name="Report.DateSolved" class="form-control" type="date" />
+        <span asp-validation-for="DateSolved" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Status" class="control-label">Status</label>
+        <input asp-for="Status" name="Report.Status" class="form-control" />
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="control-label">Incident Type</label>
+        <input type="hidden" asp-for="TypeID" name="Report.TypeID" id="type-id" />
+        
+        <input type="text" id="type-search" class="form-control" 
+               value="@(Model.IncidentType?.incidentType)" 
+               placeholder="Search type..." autocomplete="off" />
+               
+        <span asp-validation-for="TypeID" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        
+        <a href="@(ViewBag.ReturnUrl ?? Url.Action("Index", new { page = ViewBag.Page, sort = ViewBag.Sort, ascending = ViewBag.Ascending }))" 
+           class="btn btn-secondary">
+            Cancel
+        </a>
+    </div>
+</form>

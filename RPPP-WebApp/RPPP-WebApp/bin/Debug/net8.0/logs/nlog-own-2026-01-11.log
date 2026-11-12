@@ -1,0 +1,13 @@
+2026-01-11 22:45:51.8111|0|INFO|RPPP-WebApp.Program|Application starting |url: |action: |RPPP-WebApp.Program.<Main>$
+2026-01-11 22:45:52.3972|14|INFO|Microsoft.Hosting.Lifetime|Now listening on: https://localhost:5001 |url: |action: |Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync
+2026-01-11 22:45:52.3972|14|INFO|Microsoft.Hosting.Lifetime|Now listening on: http://localhost:5000 |url: |action: |Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync
+2026-01-11 22:45:52.3972|0|INFO|Microsoft.Hosting.Lifetime|Application started. Press Ctrl+C to shut down. |url: |action: |Microsoft.Extensions.Hosting.Internal.ConsoleLifetime.OnApplicationStarted
+2026-01-11 22:45:52.4051|0|INFO|Microsoft.Hosting.Lifetime|Hosting environment: Development |url: |action: |Microsoft.Extensions.Hosting.Internal.ConsoleLifetime.OnApplicationStarted
+2026-01-11 22:45:52.4051|0|INFO|Microsoft.Hosting.Lifetime|Content root path: C:\Users\pavle\Desktop\dosa_26\RPPP-WebApp\RPPP-WebApp |url: |action: |Microsoft.Extensions.Hosting.Internal.ApplicationLifetime.NotifyStarted
+2026-01-11 22:51:42.2201|0|INFO|Microsoft.Hosting.Lifetime|Application is shutting down... |url: |action: |Microsoft.Extensions.Hosting.Internal.ApplicationLifetime.StopApplication
+2026-01-11 22:57:47.5197|0|INFO|RPPP-WebApp.Program|Application starting |url: |action: |RPPP-WebApp.Program.<Main>$
+2026-01-11 22:57:48.1434|14|INFO|Microsoft.Hosting.Lifetime|Now listening on: https://localhost:5001 |url: |action: |Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync
+2026-01-11 22:57:48.1434|14|INFO|Microsoft.Hosting.Lifetime|Now listening on: http://localhost:5000 |url: |action: |Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync
+2026-01-11 22:57:48.1434|0|INFO|Microsoft.Hosting.Lifetime|Application started. Press Ctrl+C to shut down. |url: |action: |Microsoft.Extensions.Hosting.Internal.ConsoleLifetime.OnApplicationStarted
+2026-01-11 22:57:48.1509|0|INFO|Microsoft.Hosting.Lifetime|Hosting environment: Development |url: |action: |Microsoft.Extensions.Hosting.Internal.ConsoleLifetime.OnApplicationStarted
+2026-01-11 22:57:48.1509|0|INFO|Microsoft.Hosting.Lifetime|Content root path: C:\Users\pavle\Desktop\dosa_26\RPPP-WebApp\RPPP-WebApp |url: |action: |Microsoft.Extensions.Hosting.Internal.ApplicationLifetime.NotifyStarted

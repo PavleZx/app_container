@@ -1,0 +1,52 @@
+﻿@model RPPP_WebApp.Model.VisitGroup
+
+<form asp-route-id="@Model.VisitGroupId"
+      asp-route-page="@ViewBag.Page"
+      asp-route-sort="@ViewBag.Sort"
+      asp-route-ascending="@ViewBag.Ascending"
+      method="post">
+
+    <div class="mb-3">
+        <label asp-for="GroupName" class="form-label"></label>
+        <input asp-for="GroupName" class="form-control" />
+        <div class="form-text"><span asp-validation-for="GroupName" class="text-danger"></span></div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DateOfVisiting" class="form-label"></label>
+        <input asp-for="DateOfVisiting" type="date" class="form-control" />
+        <div class="form-text"><span asp-validation-for="DateOfVisiting" class="text-danger"></span></div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Approval" class="form-label"></label>
+        <input asp-for="Approval" class="form-control" />
+        <div class="form-text"><span asp-validation-for="Approval" class="text-danger"></span></div>
+    </div>
+    <div class="mb-3">
+        <label asp-for="VisitorCount" class="form-label"></label>
+        <input asp-for="VisitorCount" class="form-control" />
+        <div class="form-text"><span asp-validation-for="VisitorCount" class="text-danger"></span></div>
+    </div>
+    <div class="mb-3">
+        <div class="form-group">
+            <label asp-for="TourId"></label>
+            <select asp-for="TourId"
+                    asp-items="ViewBag.TourTypeList"
+                    class="form-control">
+                <option value="">Select tour type</option>
+            </select>
+        </div>
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a asp-action="Index"
+           asp-route-page="@ViewBag.Page"
+           asp-route-sort="@ViewBag.Sort"
+           asp-route-ascending="@ViewBag.Ascending"
+           class="btn btn-secondary">Cancel</a>
+    </div>
+    <div asp-validation-summary="All"></div>
+</form>
+
+@section scripts {
+    <partial name="IncludeValidation" />
+}

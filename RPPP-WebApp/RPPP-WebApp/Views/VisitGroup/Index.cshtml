@@ -1,0 +1,96 @@
+﻿@* RPPP_WebApp.ViewModels.PagedList<RPPP_WebApp.Model.VisitGroup> *@
+
+<h2>Visit Groups</h2>
+
+<a asp-action="Create" class="btn btn-primary">Add new visit group</a>
+<a asp-action="MasterDetailPdfRaport"
+   class="btn btn-outline-primary">
+    Generate PDF
+</a>
+
+<a asp-action="MasterDetailExcelReport"
+   class="btn btn-outline-primary">
+    Generate Excel
+</a>
+
+
+<pager page-info="@Model.PagingInfo" page-action="Index" page-title="Enter page"
+       class="float-end">
+</pager>
+
+<table class="table table-sm table-striped table-hover">
+  <thead>
+    <tr>
+      <th>
+        <a asp-route-sort="1" asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-ascending="@(Model.PagingInfo.Sort == 1 ? !Model.PagingInfo.Ascending : true)">
+          Visit Group ID
+        </a>
+      </th>
+      <th>
+        <a asp-route-sort="2" asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-ascending="@(Model.PagingInfo.Sort == 2 ? !Model.PagingInfo.Ascending : true)">
+          Group's Name
+        </a>
+      </th>
+      <th>
+        <a asp-route-sort="3" asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-ascending="@(Model.PagingInfo.Sort == 3 ? !Model.PagingInfo.Ascending : true)">
+          Date of Visit
+        </a>
+      </th>
+      <th>
+        <a asp-route-sort="4" asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-ascending="@(Model.PagingInfo.Sort == 4 ? !Model.PagingInfo.Ascending : true)">
+            Approval
+        </a>
+      </th>
+        <th>
+            <a asp-route-sort="5" asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-ascending="@(Model.PagingInfo.Sort == 5 ? !Model.PagingInfo.Ascending : true)">
+                Visitor Count
+            </a>
+        </th>
+        <th>
+            <a asp-route-sort="6" asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-ascending="@(Model.PagingInfo.Sort == 6 ? !Model.PagingInfo.Ascending : true)">
+                Tour Type
+            </a>
+        </th>
+        <th>Guides</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var group in Model.Data)
+    {
+      <tr>
+        <td class="text-left">@group.VisitGroupId</td>
+        <td class="text-left">@group.GroupName</td>
+        <td class="text-left">@group.DateOfVisiting</td>
+        <td class="text-left">@group.Approval</td>
+        <td class="text-left">@group.VisitorCount</td>
+        <td>
+            @(group.Tour != null
+                            ? group.Tour.TourName
+                            : "—")
+        </td>
+        <td class="text-left">@group.GuidesList</td>
+       <td>
+          <a asp-action="Edit"
+            asp-route-id="@group.VisitGroupId"
+             asp-route-page="@Model.PagingInfo.CurrentPage"
+             asp-route-sort="@Model.PagingInfo.Sort"
+             asp-route-ascending="@Model.PagingInfo.Ascending"
+                       class="btn btn-warning" title="Edit">Edit</a>
+
+          <form asp-action="Delete" method="post"
+                asp-route-page="@Model.PagingInfo.CurrentPage"
+                asp-route-sort="@Model.PagingInfo.Sort"
+                          asp-route-ascending="@Model.PagingInfo.Ascending" class="d-inline">
+            <input type="hidden" name="VisitGroupId" value="@group.VisitGroupId" />
+            <button type="submit" class="btn btn-danger delete" title="Delete">Delete</button>
+                    </form>
+                    <a asp-action="MasterDetail" asp-route-id="@group.VisitGroupId"
+                class="btn btn-info" title="Details">Details</a>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+<partial name="_Paging" model="Model.PagingInfo" />

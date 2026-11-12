@@ -1,0 +1,135 @@
+@model RPPP_WebApp.ViewModels.EnclosureDetailViewModel
+
+@{
+    ViewData["Title"] = "Enclosure Master-Detail View";
+}
+
+<h1>Enclosure Details</h1>
+<form asp-action="MasterDetailEdit" method="post">
+<table class="table table-sm table-striped table-hover">
+<thead>
+<tr><th>
+    <div class="card-header">
+        <h3>Enclosure Information (#@Model.Enclosure.EnclosureID)</h3>
+    <div class="form-group">
+        
+        <input type="hidden" asp-for="@Model.Enclosure.EnclosureID" />
+        <input type="submit" value="Save Changes" class="btn btn-primary" />
+        <a asp-action="Index" 
+           class="btn btn-primary">
+           Back
+            </a>
+        </div>
+    </div>
+        </th></tr>
+    </thead>
+    <tr><th>
+    <div class="form-group">
+        <label asp-for="@Model.Enclosure.Name" class="control-label"></label>
+        <input asp-for="@Model.Enclosure.Name" class="form-control" />
+        <span asp-validation-for="@Model.Enclosure.Name" class="text-danger"></span>
+    </div></th><th>
+    <div class="form-group">
+        <label asp-for="@Model.Enclosure.Dimensions" class="control-label"></label>
+        <textarea asp-for="@Model.Enclosure.Dimensions" class="form-control"></textarea>
+        <span asp-validation-for="@Model.Enclosure.Dimensions" class="text-danger"></span>
+    </div></th><th>
+        <div class="form-group">
+        <label asp-for="@Model.Enclosure.Change" class="control-label"></label>
+        <textarea asp-for="@Model.Enclosure.Change" class="form-control"></textarea>
+        <span asp-validation-for="@Model.Enclosure.Change" class="text-danger"></span>
+    </div></th></tr><tr><th>
+        <div class="form-group">
+        <label asp-for="@Model.Enclosure.Lighting" class="control-label"></label>
+        <textarea asp-for="@Model.Enclosure.Lighting" class="form-control"></textarea>
+        <span asp-validation-for="@Model.Enclosure.Lighting" class="text-danger"></span>
+    </div></th><th>
+        <div class="form-group">
+        <label asp-for="@Model.Enclosure.Shading" class="control-label"></label>
+        <textarea asp-for="@Model.Enclosure.Shading" class="form-control"></textarea>
+        <span asp-validation-for="@Model.Enclosure.Shading" class="text-danger"></span>
+    </div></th><th>
+    <div class="form-group">
+        <label asp-for="@Model.Enclosure.LocationName" class="control-label"></label>
+        <textarea asp-for="@Model.Enclosure.LocationName" class="form-control"></textarea>
+        <span asp-validation-for="@Model.Enclosure.LocationName" class="text-danger"></span>
+    </div></th><th>
+        <div class="form-group">
+        <label asp-for="@Model.Enclosure.AnimalTypes" class="control-label"></label>
+        <textarea asp-for="@Model.Enclosure.AnimalTypes" class="form-control"></textarea>
+        <span asp-validation-for="@Model.Enclosure.AnimalTypes" class="text-danger"></span>
+    </div></th></tr>
+    </table>
+        </form>
+<div class="card">
+    <div class="card-header">
+<h4>IndividualAnimals</h4>
+<form asp-action="MasterDetail" method="get">
+@Html.AntiForgeryToken()
+<input type="hidden" asp-for="@Model.Enclosure.EnclosureID" />
+
+<table class="table table-sm">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Serial</th>
+                <th>Nickname</th>
+                <th>Acquisition</th>
+                <th>Status</th>
+                <th>AnimalName</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+<tbody>
+</form>
+<form asp-action="saveAnimal" method="post" style="display:inline;">
+<input type="hidden" asp-for="@Model.Enclosure.EnclosureID" />
+                        <button type="submit" class="btn btn-primary save">
+                            Save
+                        </button>
+@for (int i = 0; i < @Model.IndividualAnimals.Count; i++)
+{
+        <tr>
+            <td>
+                <input asp-for="IndividualAnimals[i].AnimalID"
+                value = "@Model.IndividualAnimals[i].AnimalID"
+                class="form-control form-control-sm"
+                style="width: 45px;"
+                readonly /></td>
+                <td>
+                    <input asp-for="IndividualAnimals[i].SerialNum" class="form-control form-control-sm"/>
+                </td>
+                <td>
+                    <input asp-for="IndividualAnimals[i].Nickname" class="form-control form-control-sm"/>
+                </td>
+                <td>
+                    <input asp-for="IndividualAnimals[i].Acquisition" class="form-control form-control-sm"/>
+                </td>
+                <td>
+                    <input asp-for="IndividualAnimals[i].Status" class="form-control form-control-sm" />
+                </td>
+                <td>
+                    <input asp-for="IndividualAnimals[i].AnimalName" class="form-control form-control-sm"/>
+                </td>
+                <td>
+                    <form asp-action="removeAnimal" method="post" style="display:inline;">
+                        <input type="hidden" name="animalId" value="@Model.IndividualAnimals[i].AnimalID" />
+                        <input type="hidden" name="enclosureId" value="@Model.Enclosure.EnclosureID" />
+                        <button type="submit" class="btn btn-danger delete">
+                            Remove
+                        </button>
+                    </form>
+                </td>
+            </tr>
+}</form>
+            <form asp-action="addAnimal" method="post" style="display:inline;">
+                        <input type="hidden" name="enclosureId" value="@Model.Enclosure.EnclosureID" />
+                        <button type="submit" class="btn btn-success add">
+                            Add
+                        </button>
+                    </form>
+</tbody>
+</table>
+</div>
+</div>

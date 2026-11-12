@@ -1,0 +1,52 @@
+﻿@model RPPP_WebApp.Model.Competence
+
+<h2>Add Competence</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <input asp-for="Description" class="form-control" />
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ExpiryDate"></label>
+        <input asp-for="ExpiryDate" type="date" class="form-control" />
+        <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <div class="form-group">
+            <label asp-for="CertificateId"></label>
+            <select asp-for="CertificateId"
+                    asp-items="ViewBag.CertificateList"
+                    class="form-control">
+                <option value="">-- select certificate --</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="form-group">
+            <label asp-for="WorkerId"></label>
+            <select asp-for="WorkerId"
+                    asp-items="ViewBag.WorkerList"
+                    class="form-control">
+                <option value="">-- select worker --</option>
+            </select>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="IncludeValidation" />
+}

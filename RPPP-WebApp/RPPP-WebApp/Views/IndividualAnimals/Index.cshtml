@@ -1,0 +1,95 @@
+@model RPPP_WebApp.ViewModels.IndividualAnimalViewModel
+
+@{
+    ViewData["Title"] = "IndividualAnimals";
+}
+
+<h1>Individual Animals (Simple View)</h1>
+
+<a asp-action="Create" class="btn btn-primary" asp-route-page="@Model.PagingInfo.CurrentPage"
+                        asp-route-sort="@Model.PagingInfo.Sort" asp-route-ascending="@Model.PagingInfo.Ascending">Create New Individual Animal</a>
+
+
+<pager page-info="@Model.PagingInfo" page-action="Index" page-title="Enter page" class="float-end">
+</pager>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-route-sort="1" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 1 ? !Model.PagingInfo.Ascending : true)">
+                    Individual Animals Id
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="2" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 2 ? !Model.PagingInfo.Ascending : true)">
+                    SerialNum
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="3" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 3 ? !Model.PagingInfo.Ascending : true)">
+                    Nickname
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="4" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 4 ? !Model.PagingInfo.Ascending : true)">
+                    Acquisition
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="5" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 5 ? !Model.PagingInfo.Ascending : true)">
+                    Status
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="6" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 6 ? !Model.PagingInfo.Ascending : true)">
+                    Enclosure
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="7" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 7 ? !Model.PagingInfo.Ascending : true)">
+                    Name
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var individualAnimal in Model.IndividualAnimals)
+        {
+            <tr>
+                <td>@individualAnimal.AnimalID</td>
+                <td>@individualAnimal.SerialNum</td>
+                <td>@individualAnimal.Nickname</td>
+                <td>@individualAnimal.Acquisition</td>
+                <td>@individualAnimal.Status</td>
+                <td>@individualAnimal.Name</td>
+                <td>@individualAnimal.AnimalName</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@individualAnimal.AnimalID" asp-route-page="@Model.PagingInfo.CurrentPage"
+                        asp-route-sort="@Model.PagingInfo.Sort" asp-route-ascending="@Model.PagingInfo.Ascending"
+                        class="btn btn-warning" title="Edit">Edit</a>
+
+                    <form asp-action="Delete" asp-route-id="@individualAnimal.AnimalID"
+                        asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-sort="@Model.PagingInfo.Sort"
+                        asp-route-ascending="@Model.PagingInfo.Ascending" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@individualAnimal.AnimalID" />
+                        <button type="submit" class="btn btn-danger delete" data-name="@individualAnimal.Nickname">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts {
+    <script src="~/js/pager.js" asp-append-version="true"></script>
+}

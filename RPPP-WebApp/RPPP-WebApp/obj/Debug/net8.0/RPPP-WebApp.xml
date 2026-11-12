@@ -1,0 +1,682 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RPPP-WebApp</name>
+    </assembly>
+    <members>
+        <member name="T:RPPP_WebApp.Controllers.IncidentReportController">
+            <summary>
+            MVC controller responsible for managing Incident Reports.
+            Provides CRUD operations, master-detail editing of affected items (Affects),
+            and export of reports to PDF and Excel formats.
+            </summary>
+            <remarks>
+            This controller handles:
+            <list type="bullet">
+            <item>Paged and sorted listing of incident reports</item>
+            <item>Creation, editing, and deletion of reports</item>
+            <item>Master-detail view for managing items affected by the incident</item>
+            <item>Batch updating of affected items details</item>
+            <item>Generation of full log PDF and master-detail Excel reports</item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.IncidentReportController.#ctor(RPPP_WebApp.Model.Rppp08Context,Microsoft.Extensions.Options.IOptionsSnapshot{RPPP_WebApp.AppSettings},Microsoft.Extensions.Logging.ILogger{RPPP_WebApp.Controllers.IncidentReportController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RPPP_WebApp.Controllers.IncidentReportController"/> class.
+            </summary>
+            <param name="context">Database context used for data access.</param>
+            <param name="options">Application configuration settings (e.g., page size).</param>
+            <param name="logger">Logger instance for diagnostic messages.</param>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.IncidentReportController.Index(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Displays a paged and sorted list of incident reports.
+            </summary>
+            <param name="page">Page number (default is 1).</param>
+            <param name="sort">Sort column identifier.</param>
+            <param name="ascending">Determines sort order (true for ascending).</param>
+            <returns>View containing a paged list of incident reports.</returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.IncidentReportController.Create">
+            <summary>
+            Displays the form for creating a new incident report.
+            </summary>
+            <returns>View for creating a new report.</returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.IncidentReportController.Create(RPPP_WebApp.Model.IncidentReport)">
+            <summary>
+            Creates a new incident report based on form data.
+            </summary>
+            <param name="incidentReport">The incident report entity to create.</param>
+            <returns>Redirects to Index on success, or redisplays form on failure.</returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.IncidentReportController.Delete(System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Deletes an incident report by its identifier.
+            </summary>
+            <param name="reportID">The ID of the report to delete.</param>
+            <param name="page">Current page number (to maintain state).</param>
+            <param name="sort">Current sort column (to maintain state).</param>
+            <param name="ascending">Current sort order (to maintain state).</param>
+            <returns>Redirects to the Index view.</returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.IncidentReportController.MasterDetail(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Displays the Master-Detail view for a specific report and its affected items.
+            </summary>
+            <param name="id">Report identifier.</param>
+            <param name="sort">Sort order for the details list.</param>
+            <param name="ascending">Sort direction for the details list.</param>
+            <returns>View model containing the report and list of affected items.</returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.IncidentReportController.Edit(System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Displays the form to edit an existing incident report (Master data only).
+            </summary>
+            <param name="id">The ID of the report to edit.</param>
+            <param name="page">Current page number.</param>
+            <param name="sort">Current sort column.</param>
+            <param name="ascending">Current sort order.</param>
+            <returns>Edit view for the report.</returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.IncidentReportController.Edit(System.Int32,RPPP_WebApp.Model.IncidentReport,System.String)">
+            <summary>
+            Updates an existing incident report.
+            </summary>
+            <param name="id">The ID of the report.</param>
+            <param name="incidentReport">The updated report entity.</param>
+            <param name="returnUrl">URL to return to after update.</param>
+            <returns>Redirects to Index or ReturnUrl on success.</returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.IncidentReportController.AddEmptyItem(System.Int32)">
+            <summary>
+            Adds an empty 'Affects' item to a report in the Master-Detail view.
+            Used for inline editing/creation of details.
+            </summary>
+            <param name="reportId">The ID of the parent report.</param>
+            <returns>Redirects back to the MasterDetail view.</returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.IncidentReportController.SaveAffectsBatch(RPPP_WebApp.ViewModels.IncidentAffectsViewModel)">
+            <summary>
+            Saves changes to a batch of 'Affects' items associated with a report.
+            Handles updates and deletions of multiple items at once.
+            </summary>
+            <param name="model">ViewModel containing the list of affected items.</param>
+            <returns>Redirects back to the MasterDetail view.</returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.IncidentReportController.ExportAllReportsPdf">
+            <summary>
+            Generates a PDF report containing a full log of all incident reports and their details.
+            </summary>
+            <returns>A PDF file download.</returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.IncidentReportController.ExportToExcel">
+            <summary>
+            Exports all incident reports and their details to an Excel file.
+            Each report is placed in a separate worksheet.
+            </summary>
+            <returns>An Excel file download.</returns>
+        </member>
+        <member name="T:RPPP_WebApp.Controllers.WebApi.AffectsApiController">
+            <summary>
+            Provides CRUD operations for 'Affects' items (Incident details).
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.AffectsApiController.GetAll">
+            <summary>
+            Returns all 'Affects' records.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.AffectsApiController.Get(System.Int32)">
+            <summary>
+            Returns a specific 'Affects' record by ID.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.AffectsApiController.Post(RPPP_WebApp.Model.Affects)">
+            <summary>
+            Creates a new 'Affects' record.
+            </summary>
+            <remarks>
+            ReportID is required. EnclosureID and AnimalID are optional (nullable).
+            </remarks>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.AffectsApiController.Put(System.Int32,RPPP_WebApp.Model.Affects)">
+            <summary>
+            Updates an existing 'Affects' record.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.AffectsApiController.Delete(System.Int32)">
+            <summary>
+            Deletes an 'Affects' record.
+            </summary>
+        </member>
+        <member name="T:RPPP_WebApp.Controllers.WebApi.EnclosureApiController">
+            <summary>
+            Provides CRUD operations for enclosuresss.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.EnclosureApiController.GetAll">
+            <summary>
+            Returns a list of all enclosures.
+            </summary>
+            <response code="200">Returns the list of enclosures.</response>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.EnclosureApiController.Get(System.Int32)">
+            <summary>
+            Returns a specific enclosure by ID.
+            </summary>
+            <param name="id">Enclosure id.</param>
+            <response code="200">Returns the enclosure.</response>
+            <response code="404">Enclosure is not found.</response>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.EnclosureApiController.Post(RPPP_WebApp.Model.Enclosure)">
+            <summary>
+            Creates a new enclosure.
+            </summary>
+            <param name="model">Enclosure.</param>
+            <response code="201">Created successfully.</response>
+            <response code="400">Invalid data.</response>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.EnclosureApiController.Put(System.Int32,RPPP_WebApp.Model.Enclosure)">
+            <summary>
+            Updates an existing enclosure.
+            </summary>
+            <param name="id">Enclosure ID.</param>
+            <param name="model">Updated enclosure object.</param>
+            <response code="204">Update successful.</response>
+            <response code="400">ID mismatch or invalid data.</response>
+            <response code="404">Enclosure not found.</response>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.EnclosureApiController.Delete(System.Int32)">
+            <summary>
+            Deletes an enclosure.
+            </summary>
+            <param name="id">Enclosure ID.</param>
+            <response code="204">Deleted successfully.</response>
+            <response code="404">Not found.</response>
+        </member>
+        <member name="T:RPPP_WebApp.Controllers.WebApi.ExpenseApiController">
+            <summary>
+            Provides CRUD operations for expenses.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.ExpenseApiController.GetAll">
+            <summary>
+            Returns all expenses.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.ExpenseApiController.Get(System.Int32)">
+            <summary>
+            Returns an expense by ID.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.ExpenseApiController.Post(RPPP_WebApp.Model.Expense)">
+            <summary>
+            Creates a new expense.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.ExpenseApiController.Put(System.Int32,RPPP_WebApp.Model.Expense)">
+            <summary>
+            Updates an existing expense.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.ExpenseApiController.Delete(System.Int32)">
+            <summary>
+            Deletes an expense.
+            </summary>
+        </member>
+        <member name="T:RPPP_WebApp.Controllers.WebApi.IncidentReportApiController">
+            <summary>
+            Provides CRUD operations for incident reports.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.IncidentReportApiController.GetAll">
+            <summary>
+            Returns a list of all incident reports.
+            </summary>
+            <response code="200">Returns the list of reports.</response>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.IncidentReportApiController.Get(System.Int32)">
+            <summary>
+            Returns a specific incident report by ID.
+            </summary>
+            <param name="id">Report identifier.</param>
+            <response code="200">Returns the report.</response>
+            <response code="404">If the report is not found.</response>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.IncidentReportApiController.Post(RPPP_WebApp.Model.IncidentReport)">
+            <summary>
+            Creates a new incident report.
+            </summary>
+            <param name="model">Report object.</param>
+            <response code="201">Created successfully.</response>
+            <response code="400">Invalid data.</response>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.IncidentReportApiController.Put(System.Int32,RPPP_WebApp.Model.IncidentReport)">
+            <summary>
+            Updates an existing incident report.
+            </summary>
+            <param name="id">Report ID.</param>
+            <param name="model">Updated report object.</param>
+            <response code="204">Update successful.</response>
+            <response code="400">ID mismatch or invalid data.</response>
+            <response code="404">Report not found.</response>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.IncidentReportApiController.Delete(System.Int32)">
+            <summary>
+            Deletes an incident report.
+            </summary>
+            <param name="id">Report ID.</param>
+            <response code="204">Deleted successfully.</response>
+            <response code="404">Not found.</response>
+        </member>
+        <member name="T:RPPP_WebApp.Controllers.WebApi.IndividualAnimalsApiController">
+            <summary>
+            Provides CRUD operations for 'Affects' items (Incident details).
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.IndividualAnimalsApiController.GetAll">
+            <summary>
+            Returns all 'IndividualAnimals' records.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.IndividualAnimalsApiController.Get(System.Int32)">
+            <summary>
+            Returns a specific 'IndividualAnimals' record by ID.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.IndividualAnimalsApiController.Post(RPPP_WebApp.Model.IndividualAnimals)">
+            <summary>
+            Creates a new 'IndividualAnimals' record.
+            </summary>
+            <remarks>
+            EnclosureID is required. NameID optional (nullable).
+            </remarks>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.IndividualAnimalsApiController.Put(System.Int32,RPPP_WebApp.Model.IndividualAnimals)">
+            <summary>
+            Updates an existing 'IndividualAnimal' record.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.IndividualAnimalsApiController.Delete(System.Int32)">
+            <summary>
+            Deletes an 'IndividualAnimal' record.
+            </summary>
+        </member>
+        <member name="T:RPPP_WebApp.Controllers.WebApi.TaskApiController">
+            <summary>
+            Provides CRUD operations for tasks.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.TaskApiController.GetAll">
+            <summary>
+            Returns all tasks.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.TaskApiController.Get(System.Int32)">
+            <summary>
+            Returns a task by ID.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.TaskApiController.Post(RPPP_WebApp.Model.Task)">
+            <summary>
+            Creates a new task.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.TaskApiController.Put(System.Int32,RPPP_WebApp.Model.Task)">
+            <summary>
+            Updates an existing task.
+            </summary>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WebApi.TaskApiController.Delete(System.Int32)">
+            <summary>
+            Deletes a task.
+            </summary>
+        </member>
+        <member name="T:RPPP_WebApp.Controllers.WorkerController">
+            <summary>
+            MVC controller responsible for managing workers.
+            Provides CRUD operations, master-detail editing of worker competences,
+            and export of worker data to PDF and Excel formats.
+            </summary>
+            <remarks>
+            This controller handles:
+            <list type="bullet">
+            <item>paged and sorted listing of workers</item>
+            <item>creation, editing and deletion of workers</item>
+            <item>master-detail editing of worker competences</item>
+            <item>generation of master-detail PDF and Excel reports</item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WorkerController.#ctor(RPPP_WebApp.Model.Rppp08Context,Microsoft.Extensions.Options.IOptionsSnapshot{RPPP_WebApp.AppSettings},Microsoft.Extensions.Logging.ILogger{RPPP_WebApp.Controllers.WorkerController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RPPP_WebApp.Controllers.WorkerController"/> class.
+            </summary>
+            <param name="context">Database context used for data access.</param>
+            <param name="options">Application configuration settings.</param>
+            <param name="logger">Logger instance for diagnostic messages.</param>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WorkerController.Index(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Displays a paged and sorted list of workers.
+            </summary>
+            <param name="page">Page number.</param>
+            <param name="sort">Sort column identifier.</param>
+            <param name="ascending">Determines sort order.</param>
+            <returns>
+            View containing a paged list of workers.
+            </returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WorkerController.Create">
+            <summary>
+            Displays the worker creation form.
+            </summary>
+            <returns>
+            View for creating a new worker.
+            </returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WorkerController.Create(RPPP_WebApp.Model.Worker)">
+            <summary>
+            Creates a new worker.
+            </summary>
+            <param name="worker">Worker entity populated from the form.</param>
+            <returns>
+            Redirects to index view on success or redisplays the form on validation error.
+            </returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WorkerController.Delete(System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Deletes a worker by identifier.
+            </summary>
+            <param name="workerID">Identifier of the worker to delete.</param>
+            <param name="page">Current page number.</param>
+            <param name="sort">Current sort column.</param>
+            <param name="ascending">Current sort order.</param>
+            <returns>
+            Redirects to the index view.
+            </returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WorkerController.Edit(System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Displays the worker edit form.
+            </summary>
+            <param name="id">Worker identifier.</param>
+            <param name="page">Current page number.</param>
+            <param name="sort">Current sort column.</param>
+            <param name="ascending">Current sort order.</param>
+            <returns>
+            Edit view for the specified worker or 404 if not found.
+            </returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WorkerController.Update(System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Updates an existing worker.
+            </summary>
+            <param name="id">Worker identifier.</param>
+            <param name="page">Current page number.</param>
+            <param name="sort">Current sort column.</param>
+            <param name="ascending">Current sort order.</param>
+            <returns>
+            Redirects to index view on success or redisplays the edit form on error.
+            </returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WorkerController.MasterDetail(System.Int32)">
+            <summary>
+            Displays master-detail view of a worker and their competences.
+            </summary>
+            <param name="id">Worker identifier.</param>
+            <returns>
+            Master-detail view for the specified worker.
+            </returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WorkerController.MasterDetailEdit(RPPP_WebApp.ViewModels.WorkerCompetenceMasterDetail)">
+            <summary>
+            Updates worker and competence data from master-detail form.
+            </summary>
+            <param name="model">Master-detail view model containing worker and competences.</param>
+            <returns>
+            Redirects back to the master-detail view.
+            </returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WorkerController.SaveCompetencesBatch(RPPP_WebApp.ViewModels.CompetenceBatchEdit)">
+            <summary>
+            Saves batch changes to worker competences.
+            Handles creation, update and deletion of competences.
+            </summary>
+            <param name="model">Batch edit model containing competence rows.</param>
+            <returns>
+            Redirects to master-detail view after processing.
+            </returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WorkerController.MasterDetailPdfAll">
+            <summary>
+            Generates a master-detail PDF report for all workers and their competences.
+            </summary>
+            <returns>
+            PDF file containing worker competence report.
+            </returns>
+        </member>
+        <member name="M:RPPP_WebApp.Controllers.WorkerController.MasterDetailExcelAll">
+            <summary>
+            Generates a master-detail Excel report for all workers and their competences.
+            Each worker is exported to a separate worksheet.
+            </summary>
+            <returns>
+            Excel file containing worker competence data.
+            </returns>
+        </member>
+        <member name="T:CompetenceApiController">
+            <summary>
+            Provides CRUD operations for competences.
+            </summary>
+            <remarks>
+            This controller exposes a RESTful Web API for managing competences.
+            It supports standard HTTP verbs and returns JSON responses.
+            </remarks>
+        </member>
+        <member name="M:CompetenceApiController.GetAll">
+            <summary>
+            Returns a list of all competences.
+            </summary>
+            <remarks>
+            Retrieves all competences from the system.
+            The result is returned as a JSON array.
+            </remarks>
+            <returns>
+            A list of competences.
+            </returns>
+            <response code="200">Competences successfully returned.</response>
+        </member>
+        <member name="M:CompetenceApiController.Get(System.Int32)">
+            <summary>
+            Returns a competence by identifier.
+            </summary>
+            <param name="id">Competence identifier.</param>
+            <returns>
+            The competence with the specified identifier.
+            </returns>
+            <response code="200">Competence successfully returned.</response>
+            <response code="404">Competence with the given identifier does not exist.</response>
+        </member>
+        <member name="M:CompetenceApiController.Post(RPPP_WebApp.ViewModels.CompetenceViewModel)">
+            <summary>
+            Creates a new competence.
+            </summary>
+            <param name="model">Competence data.</param>
+            <returns>
+            The created competence.
+            </returns>
+            <response code="201">Competence successfully created.</response>
+            <response code="400">Invalid competence data.</response>
+            <response code="404">Related worker or certificate does not exist.</response>
+        </member>
+        <member name="M:CompetenceApiController.Put(System.Int32,RPPP_WebApp.ViewModels.CompetenceViewModel)">
+            <summary>
+            Updates an existing competence.
+            </summary>
+            <param name="id">Competence identifier.</param>
+            <param name="model">Updated competence data.</param>
+            <returns>
+            No content if update is successful.
+            </returns>
+            <response code="204">Competence successfully updated.</response>
+            <response code="400">Invalid request or identifier mismatch.</response>
+            <response code="404">Competence, worker or certificate does not exist.</response>
+        </member>
+        <member name="M:CompetenceApiController.Delete(System.Int32)">
+            <summary>
+            Deletes a competence.
+            </summary>
+            <param name="id">Competence identifier.</param>
+            <returns>
+            No content if deletion is successful.
+            </returns>
+            <response code="204">Competence successfully deleted.</response>
+            <response code="404">Competence with the given identifier does not exist.</response>
+        </member>
+        <member name="T:GroupGuideApiController">
+            <summary>
+            Provides CRUD operations for group guides.
+            </summary>
+        </member>
+        <member name="M:GroupGuideApiController.GetAll">
+            <summary>
+            Returns a list of all group guides.
+            </summary>
+        </member>
+        <member name="M:GroupGuideApiController.Get(System.Int32)">
+            <summary>
+            Returns a group guide by identifier.
+            </summary>
+        </member>
+        <member name="M:GroupGuideApiController.Post(RPPP_WebApp.ViewModels.GroupGuideViewModel)">
+            <summary>
+            Creates a new group guide.
+            </summary>
+        </member>
+        <member name="M:GroupGuideApiController.Put(System.Int32,RPPP_WebApp.ViewModels.GroupGuideViewModel)">
+            <summary>
+            Updates an existing group guide.
+            </summary>
+        </member>
+        <member name="M:GroupGuideApiController.Delete(System.Int32)">
+            <summary>
+            Deletes a group guide.
+            </summary>
+        </member>
+        <member name="T:VisitGroupApiController">
+            <summary>
+            Provides CRUD operations for visit groups.
+            </summary>
+        </member>
+        <member name="M:VisitGroupApiController.GetAll">
+            <summary>
+            Returns a list of all visit groups.
+            </summary>
+        </member>
+        <member name="M:VisitGroupApiController.Get(System.Int32)">
+            <summary>
+            Returns a visit group by identifier.
+            </summary>
+        </member>
+        <member name="M:VisitGroupApiController.Post(RPPP_WebApp.ViewModels.VisitGroupViewModel)">
+            <summary>
+            Creates a new visit group.
+            </summary>
+        </member>
+        <member name="M:VisitGroupApiController.Put(System.Int32,RPPP_WebApp.ViewModels.VisitGroupViewModel)">
+            <summary>
+            Updates an existing visit group.
+            </summary>
+        </member>
+        <member name="M:VisitGroupApiController.Delete(System.Int32)">
+            <summary>
+            Deletes a visit group.
+            </summary>
+        </member>
+        <member name="T:WorkerApiController">
+            <summary>
+            Provides CRUD operations for workers.
+            </summary>
+            <remarks>
+            This controller exposes a RESTful Web API for managing workers.
+            It supports standard HTTP verbs and returns JSON responses.
+            </remarks>
+        </member>
+        <member name="M:WorkerApiController.GetAll">
+            <summary>
+            Returns a list of all workers.
+            </summary>
+            <remarks>
+            Retrieves all workers from the system.
+            The result is returned as a JSON array.
+            </remarks>
+            <returns>
+            A list of workers.
+            </returns>
+            <response code="200">Workers successfully returned.</response>
+        </member>
+        <member name="M:WorkerApiController.Get(System.Int32)">
+            <summary>
+            Returns a worker by identifier.
+            </summary>
+            <remarks>
+            Retrieves a single worker using its unique identifier.
+            </remarks>
+            <param name="id">Worker identifier.</param>
+            <returns>
+            The worker with the specified identifier.
+            </returns>
+            <response code="200">Worker successfully returned.</response>
+            <response code="404">Worker with the given identifier does not exist.</response>
+        </member>
+        <member name="M:WorkerApiController.Post(RPPP_WebApp.ViewModels.WorkerViewModel)">
+            <summary>
+            Creates a new worker.
+            </summary>
+            <remarks>
+            Creates a new worker using the provided data.
+            If successful, returns HTTP 201 with the created worker and its URI.
+            </remarks>
+            <param name="model">Worker data.</param>
+            <returns>
+            The created worker.
+            </returns>
+            <response code="201">Worker successfully created.</response>
+            <response code="400">Invalid worker data.</response>
+        </member>
+        <member name="M:WorkerApiController.Put(System.Int32,RPPP_WebApp.ViewModels.WorkerViewModel)">
+            <summary>
+            Updates an existing worker.
+            </summary>
+            <remarks>
+            Updates all properties of an existing worker.
+            The identifier in the URL must match the identifier in the request body.
+            </remarks>
+            <param name="id">Worker identifier.</param>
+            <param name="model">Updated worker data.</param>
+            <returns>
+            No content if update is successful.
+            </returns>
+            <response code="204">Worker successfully updated.</response>
+            <response code="400">Invalid request or identifier mismatch.</response>
+            <response code="404">Worker with the given identifier does not exist.</response>
+        </member>
+        <member name="M:WorkerApiController.Delete(System.Int32)">
+            <summary>
+            Deletes a worker.
+            </summary>
+            <remarks>
+            Deletes a worker identified by the given identifier.
+            </remarks>
+            <param name="id">Worker identifier.</param>
+            <returns>
+            No content if deletion is successful.
+            </returns>
+            <response code="204">Worker successfully deleted.</response>
+            <response code="404">Worker with the given identifier does not exist.</response>
+        </member>
+    </members>
+</doc>

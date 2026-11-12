@@ -1,0 +1,93 @@
+﻿@model RPPP_WebApp.ViewModels.PagedList<RPPP_WebApp.Model.Worker>
+
+<h2>Workers</h2>
+
+<a asp-action="Create" class="btn btn-primary" asp-route-page="@Model.PagingInfo.CurrentPage"
+   asp-route-sort="@Model.PagingInfo.Sort" asp-route-ascending="@Model.PagingInfo.Ascending">Add New Worker</a>
+
+<a asp-action="MasterDetailPdfAll"
+   class="btn btn-secondary">
+    Genereate PDF raport
+</a>
+
+<a asp-action="MasterDetailExcelAll"
+   class="btn btn-success">
+    Export data to Excel
+</a>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sort="1"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 1 ? !Model.PagingInfo.Ascending : true)">
+                    #
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sort="2"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 2 ? !Model.PagingInfo.Ascending : true)">
+                    Surname
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sort="3"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 3 ? !Model.PagingInfo.Ascending : true)">
+                    Name
+                </a>
+            </th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Availability</th>
+            <th>Competencies</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var w in Model.Data)
+        {
+            <tr>
+                <td>@w.WorkerId</td>
+                <td>@w.Surname</td>
+                <td>@w.Name</td>
+                <td>@w.Email</td>
+                <td>@w.Phone</td>
+                <td>
+                    @(w.Availability != null
+                                    ? w.Availability.WorkHours
+                                    : "—")
+                </td>
+                <td>@w.CompetenceList</td>
+                <td>
+                    <a asp-action="Edit"
+                       asp-route-id="@w.WorkerId"
+                       asp-route-page="@Model.PagingInfo.CurrentPage"
+                       asp-route-sort="@Model.PagingInfo.Sort"
+                       asp-route-ascending="@Model.PagingInfo.Ascending"
+                       class="btn btn-warning" title="Edit">
+                        Edit
+                    </a>
+
+                    <form asp-action="Delete"
+                          method="post"
+                          asp-route-page="@Model.PagingInfo.CurrentPage"
+                          asp-route-sort="@Model.PagingInfo.Sort"
+                          asp-route-ascending="@Model.PagingInfo.Ascending" class="d-inline">
+
+                        <input type="hidden" name="workerID" value="@w.WorkerId" />
+
+                        <button type="submit" class="btn btn-danger delete" title="Delete">
+                            <i class="fas fa-trash-alt"></i>
+                            Delete
+                        </button>
+                    </form>
+                    <a asp-action="MasterDetail" asp-route-id="@w.WorkerId"
+                       class="btn btn-info" title="Details">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<partial name="_Paging" model="Model.PagingInfo" />

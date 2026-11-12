@@ -1,0 +1,56 @@
+﻿@model RPPP_WebApp.Model.GroupGuide
+
+<h2>Assign guide to group</h2>
+
+<form asp-action="Create" method="post">
+  <div class="mb-3">
+    <div class="form-group">
+        <label asp-for="VisitGroupId"></label>
+        <select asp-for="VisitGroupId"
+                asp-items="ViewBag.VisitGroupList"
+                class="form-control">
+            <option value="">Select group</option>
+        </select>
+    </div>
+  </div>
+    <div class="mb-3">
+    <div class="form-group">
+        <label asp-for="WorkerId"></label>
+        <select asp-for="WorkerId"
+                asp-items="ViewBag.WorkerList"
+                class="form-control">
+            <option value="">Select guide</option>
+        </select>
+    </div>
+    </div>
+    <div class="mb-3">
+        <div class="form-group">
+            <label asp-for="GuideRole" class="form-label"></label>
+            <select asp-for="GuideRole"
+                    class="form-control">
+                <option value="">-- select role --</option>
+                <option value="Main Guide">Main Guide</option>
+                <option value="Assistant">Assistant</option>
+                <option value="Trainee">Trainee</option>
+            </select>
+            <div class="form-text"><span asp-validation-for="GuideRole" class="text-danger"></span></div>
+        </div>
+    </div>
+    <div class="mb-3">
+        <div class="form-group">
+            <label asp-for="Activity" class="form-label"></label>
+            <input asp-for="Activity" class="form-control" />
+            <div class="form-text"><span asp-validation-for="Activity" class="text-danger"></span></div>
+        </div>
+    </div>
+
+  <div class="text-center">
+    <button class="btn btn-primary" type="submit">Add</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+  </div>
+  <div asp-validation-summary="All"></div>
+</form>
+
+@section scripts {
+  <partial name="IncludeValidation" />
+}

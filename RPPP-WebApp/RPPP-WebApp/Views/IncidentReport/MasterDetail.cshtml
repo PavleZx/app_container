@@ -1,0 +1,186 @@
+@model RPPP_WebApp.ViewModels.IncidentAffectsViewModel
+
+@{
+    ViewData["Title"] = "Incident Report Details";
+}
+
+@section Scripts {
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    
+    <script>
+        const enclosureData = @Json.Serialize(((SelectList)ViewBag.EnclosureList).Select(e => new { label = e.Text, value = e.Value }));
+        const animalData = @Json.Serialize(((SelectList)ViewBag.AnimalList).Select(a => new { label = a.Text, value = a.Value }));
+        const typeData = @Json.Serialize(((SelectList)ViewBag.IncidentTypeList).Select(t => new { label = t.Text, value = t.Value }));
+
+        $(document).ready(function () {
+            $("#type-search").autocomplete({
+                minLength: 0,
+                source: function(request, response) {
+                    const term = request.term.toLowerCase();
+                    const filtered = typeData.filter(item => 
+                        item.label.toLowerCase().includes(term)
+                    );
+                    response(filtered);
+                },
+                select: function(event, ui) {
+                    $(this).val(ui.item.label);
+                    $("#type-id").val(ui.item.value);
+                    return false;
+                }
+            })
+            .focus(function () { $(this).autocomplete("search", ""); })
+            .on("input", function() {
+                if ($(this).val() === "") { $("#type-id").val(""); }
+            });
+
+            function setupTableAutocomplete(element, sourceData, hiddenInputClass) {
+                $(element).autocomplete({
+                    source: sourceData, 
+                    minLength: 0,
+                    select: function (event, ui) {
+                        $(this).val(ui.item.label);
+                        $(this).closest('td').find(hiddenInputClass).val(ui.item.value);
+                        return false;
+                    }
+                })
+                .on("input", function() {
+                    if ($(this).val() === "") {
+                        $(this).closest('td').find(hiddenInputClass).val("");
+                    }
+                })
+                .focus(function () { $(this).autocomplete("search", ""); });
+            }
+
+            $(".enclosure-search").each(function() { setupTableAutocomplete(this, enclosureData, ".enclosure-id"); });
+            $(".animal-search").each(function() { setupTableAutocomplete(this, animalData, ".animal-id"); });
+
+            $(".delete-row").click(function () {
+                const row = $(this).closest("tr");
+                row.find(".is-deleted-flag").val("true");
+                row.hide();
+            });
+        });
+    </script>
+}
+
+<h2>Incident Report Details</h2>
+<hr />
+
+<form asp-action="Edit" 
+      asp-route-id="@Model.Report.ReportID" 
+      asp-route-returnUrl="@Context.Request.Path"
+      method="post">
+      
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Report.ReportID" />
+
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h4 class="mb-0">Report Information (#@Model.Report.ReportID)</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-2 col-form-label">Date Reported</dt>
+                <dd class="col-sm-4"><input asp-for="Report.DateReport" class="form-control" type="date" /></dd>
+
+                <dt class="col-sm-2 col-form-label">Date Solved</dt>
+                <dd class="col-sm-4"><input asp-for="Report.DateSolved" class="form-control" type="date" /></dd>
+
+                <dt class="col-sm-2 col-form-label">Status</dt>
+                <dd class="col-sm-4"><input asp-for="Report.Status" class="form-control" /></dd>
+
+                <dt class="col-sm-2 col-form-label">Incident Type</dt>
+                <dd class="col-sm-4">
+                    <input type="hidden" asp-for="Report.TypeID" id="type-id" />
+                    <input type="text" id="type-search" class="form-control" 
+                           value="@(Model.Report.IncidentType?.incidentType)" 
+                           placeholder="Type to search..." 
+                           autocomplete="off" />
+                </dd>
+            </dl>
+            <div class="mt-2">
+                <button type="submit" class="btn btn-warning btn-sm">Update Header</button>
+                <a asp-action="Index" class="btn btn-secondary btn-sm">Back to List</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="card">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Affected Items</h4>
+        <form asp-action="AddEmptyItem" method="post" style="display:inline;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="reportId" value="@Model.Report.ReportID" />
+            <button type="submit" class="btn btn-success btn-sm">Add New Record</button>
+        </form>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="SaveAffectsBatch" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Report.ReportID" />
+
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th><a asp-action="MasterDetail" asp-route-id="@Model.Report.ReportID" asp-route-sort="1" asp-route-ascending="@(ViewBag.Sort == 1 ? !ViewBag.Ascending : true)">ID</a></th>
+                        <th><a asp-action="MasterDetail" asp-route-id="@Model.Report.ReportID" asp-route-sort="3" asp-route-ascending="@(ViewBag.Sort == 3 ? !ViewBag.Ascending : true)">Enclosure</a></th>
+                        <th><a asp-action="MasterDetail" asp-route-id="@Model.Report.ReportID" asp-route-sort="4" asp-route-ascending="@(ViewBag.Sort == 4 ? !ViewBag.Ascending : true)">Animal</a></th>
+                        <th><a asp-action="MasterDetail" asp-route-id="@Model.Report.ReportID" asp-route-sort="5" asp-route-ascending="@(ViewBag.Sort == 5 ? !ViewBag.Ascending : true)">Description</a></th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Affects.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Model.Affects[i].affectsID
+                                <input type="hidden" name="Affects[@i].affectsID" value="@Model.Affects[i].affectsID" />
+                                <input type="hidden" name="Affects[@i].reportID" value="@Model.Affects[i].reportID" />
+                                <input type="hidden" name="Affects[@i].IsDeleted" value="false" class="is-deleted-flag" />
+                            </td>
+                            
+                            <td>
+                                <input type="hidden" 
+                                    name="Affects[@i].enclosureID" 
+                                    value="@(Model.Affects[i].enclosureID)" 
+                                    class="enclosure-id" />
+
+                                <input type="text" class="form-control form-control-sm enclosure-search" 
+                                    value="@(Model.Affects[i].Enclosure?.Name)" 
+                                    placeholder="Search..." autocomplete="off" />
+                            </td>
+                            
+                            <td>
+                                <input type="hidden" 
+                                    name="Affects[@i].animalID" 
+                                    value="@(Model.Affects[i].animalID)" 
+                                    class="animal-id" />
+
+                                <input type="text" class="form-control form-control-sm animal-search" 
+                                    value="@(Model.Affects[i].IndividualAnimal?.Nickname)" 
+                                    placeholder="Search..." autocomplete="off" />
+                            </td>
+                            
+                            <td>
+                                <input name="Affects[@i].description" 
+                                    value="@Model.Affects[i].description" 
+                                    class="form-control form-control-sm" />
+                            </td>
+                            
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm delete-row">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Save All Changes</button>
+            </div>
+        </form>
+    </div>
+ </div>

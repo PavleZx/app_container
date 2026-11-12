@@ -1,0 +1,97 @@
+@model RPPP_WebApp.Model.Task
+
+<h2>Create Task</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="TimeStart" class="form-label"></label>
+        <input asp-for="TimeStart" class="form-control" />
+        <span asp-validation-for="TimeStart" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TimeEnd" class="form-label"></label>
+        <input asp-for="TimeEnd" class="form-control" />
+        <span asp-validation-for="TimeEnd" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label"></label>
+        <input asp-for="Notes" class="form-control" />
+    </div>
+
+    <!-- ENCLOSURE -->
+    <div class="mb-3">
+        <label class="form-label">Enclosure</label>
+        <input id="enclosure-search" class="form-control"
+            value="@Model?.Enclosure?.Name" />
+        <input type="hidden" id="enclosure-id"
+            name="EnclosureID" value="@Model?.EnclosureID" />
+    </div>
+
+    <!-- TASK TYPE -->
+    <div class="mb-3">
+        <label class="form-label">Task type</label>
+        <input id="type-search" class="form-control"
+            value="@Model?.TaskType?.Name" />
+        <input type="hidden" id="type-id"
+            name="TypeID" value="@Model?.TypeID" />
+    </div>
+
+    <!-- STATUS -->
+    <div class="mb-3">
+        <label class="form-label">Status</label>
+        <input id="status-search" class="form-control"
+            value="@Model?.TaskStatus?.Status" />
+        <input type="hidden" id="status-id"
+            name="StatusID" value="@Model?.StatusID" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+
+<partial name="IncludeValidation" />
+<link rel="stylesheet"
+      href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+<script>
+$(function () {
+
+        function setupAutocomplete(searchId, hiddenId, data) {
+            $("#" + searchId).autocomplete({
+                minLength: 0,
+                source: (req, res) => {
+                    const t = req.term.toLowerCase();
+                    res(data.filter(x => x.label.toLowerCase().includes(t)));
+                },
+                select: (_, ui) => {
+                    $("#" + searchId).val(ui.item.label);
+                    $("#" + hiddenId).val(ui.item.value);
+                    return false;
+                }
+            }).focus(function () {
+                $(this).autocomplete("search", "");
+            }).on("input", function () {
+                if (!this.value) $("#" + hiddenId).val("");
+            });
+        }
+
+        setupAutocomplete("enclosure-search", "enclosure-id",
+            @Json.Serialize(((SelectList)ViewData["EnclosureID"])
+                .Select(x => new { label = x.Text, value = x.Value })));
+
+        setupAutocomplete("type-search", "type-id",
+            @Json.Serialize(((SelectList)ViewData["TypeID"])
+                .Select(x => new { label = x.Text, value = x.Value })));
+
+        setupAutocomplete("status-search", "status-id",
+            @Json.Serialize(((SelectList)ViewData["StatusID"])
+                .Select(x => new { label = x.Text, value = x.Value })));
+
+        });
+</script>
+}

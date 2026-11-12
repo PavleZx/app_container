@@ -1,0 +1,100 @@
+﻿@* @model RPPP_WebApp.Model.GroupGuide *@
+
+<h2>Groups Guides</h2>
+
+<a asp-action="Create">Add new guide for group</a>
+
+<pager page-info="@Model.PagingInfo" page-action="Index" page-title="Enter page"
+       class="float-end">
+</pager>
+
+<table class="table table-sm table-striped table-hover">
+    <thead>
+        <tr>
+            <th>
+                <a asp-route-sort="1" asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-ascending="@(Model.PagingInfo.Sort == 1 ? !Model.PagingInfo.Ascending : true)">
+                    GroupGuide ID
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="2" asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-ascending="@(Model.PagingInfo.Sort == 2 ? !Model.PagingInfo.Ascending : true)">
+                    Group's Name
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="3" asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-ascending="@(Model.PagingInfo.Sort == 3 ? !Model.PagingInfo.Ascending : true)">
+                    Guide's name
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="4" asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-ascending="@(Model.PagingInfo.Sort == 4 ? !Model.PagingInfo.Ascending : true)">
+                    Guide's surname
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="5" asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-ascending="@(Model.PagingInfo.Sort == 5 ? !Model.PagingInfo.Ascending : true)">
+                    Guide's phone number
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="6" asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-ascending="@(Model.PagingInfo.Sort == 6 ? !Model.PagingInfo.Ascending : true)">
+                    Guide's role
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="7" asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-ascending="@(Model.PagingInfo.Sort == 7 ? !Model.PagingInfo.Ascending : true)">
+                    Activity
+                </a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var groupGuide in Model.Data)
+        {
+            <tr>
+                <td class="text-left">@groupGuide.GroupGuideId</td>
+                <td>
+                    @(groupGuide.VisitGroup != null
+                                    ? groupGuide.VisitGroup.GroupName
+                                    : "—")
+                </td>
+                <td>
+                    @(groupGuide.Worker != null
+                                    ? groupGuide.Worker.Name
+                                    : "—")
+                </td>
+                <td>
+                    @(groupGuide.Worker != null
+                                    ? groupGuide.Worker.Surname
+                                    : "—")
+                </td>
+                <td>
+                    @(groupGuide.Worker != null
+                                    ? groupGuide.Worker.Phone
+                                    : "—")
+                </td>
+                <td class="text-left">@groupGuide.GuideRole</td>
+                <td class="text-left">@groupGuide.Activity</td>
+                <td>
+                  <a asp-action="Edit"
+                               asp-route-id="@groupGuide.GroupGuideId"
+                     asp-route-page="@Model.PagingInfo.CurrentPage"
+                     asp-route-sort="@Model.PagingInfo.Sort"
+                     asp-route-ascending="@Model.PagingInfo.Ascending"
+                    class="btn btn-warning" title="Edit">Edit<i class="fas fa-edit"></i></a>
+
+                  <form asp-action="Delete" method="post"
+                        asp-route-page="@Model.PagingInfo.CurrentPage"
+                        asp-route-sort="@Model.PagingInfo.Sort"
+                                  asp-route-ascending="@Model.PagingInfo.Ascending" class="d-inline">
+                    <input type="hidden" name="groupGuideId" value="@groupGuide.GroupGuideId" />
+                    <button type="submit" class="btn btn-danger delete" title="Delete"><i class="fas fa-trash-alt"></i>Delete</button>
+                  </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<partial name="_Paging" model="Model.PagingInfo" />

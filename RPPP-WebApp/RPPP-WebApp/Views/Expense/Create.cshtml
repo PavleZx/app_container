@@ -1,0 +1,46 @@
+@model RPPP_WebApp.Model.Expense
+
+<h2>Create Expense</h2>
+
+<form asp-action="Create" method="post">
+
+    <div class="mb-3">
+        <label asp-for="Type" class="form-label"></label>
+        <input asp-for="Type" class="form-control" />
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ArrivalDate" class="form-label"></label>
+        <input asp-for="ArrivalDate" class="form-control" type="date" />
+        <span asp-validation-for="ArrivalDate" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+    <label asp-for="TaskId" class="form-label"></label>
+    <select asp-for="TaskId"
+        class="form-select"
+        asp-items="@(ViewData["TaskId"] as SelectList)">
+    </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PriceId" class="form-label"></label>
+        <select asp-for="PriceId"
+        class="form-select"
+        asp-items="@(ViewData["PriceId"] as SelectList)">
+    </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="IncludeValidation" />
+}

@@ -1,0 +1,26 @@
+@model IEnumerable<RPPP_WebApp.Model.LogEntry>
+
+@{ ViewData["Title"] = "System Logs"; }
+
+<h2>System Activity Logs</h2>
+
+<table class="table table-sm table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Time</th>
+            <th>Level</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model)
+        {
+            string rowClass = log.Level == "Error" ? "table-danger" : "";
+            <tr class="@rowClass">
+                <td>@log.Logged</td>
+                <td>@log.Level</td>
+                <td>@log.Message</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,106 @@
+@model RPPP_WebApp.ViewModels.PagedList<RPPP_WebApp.Model.Affects>
+
+@{
+    ViewData["Title"] = "Affects List";
+}
+
+<h2>Affects List</h2>
+
+<a asp-action="Create" 
+   class="btn btn-primary" 
+   asp-route-returnUrl="@Url.Action("Index", "Affects", new { page = Model.PagingInfo.CurrentPage, sort = Model.PagingInfo.Sort, ascending = Model.PagingInfo.Ascending })">
+   Add New Affects Record
+</a>
+
+<table class="table table-sm table-striped table-hover">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sort="1"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 1 ? !Model.PagingInfo.Ascending : true)">
+                    #
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sort="2"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 2 ? !Model.PagingInfo.Ascending : true)">
+                    Report ID
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sort="3"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 3 ? !Model.PagingInfo.Ascending : true)">
+                    Enclosure
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sort="4"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 4 ? !Model.PagingInfo.Ascending : true)">
+                    Animal
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sort="5"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 5 ? !Model.PagingInfo.Ascending : true)">
+                    Description
+                </a>
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Data) 
+        {
+            <tr>
+                <td>@item.affectsID</td>
+                
+                <td>
+                    Report #@item.reportID
+                </td>
+                
+                <td>
+                    @(item.Enclosure != null ? item.Enclosure.Name : "—")
+                </td>
+                
+                <td>
+                    @(item.IndividualAnimal != null ? item.IndividualAnimal.Nickname : "—")
+                </td>
+                
+                <td>
+                    @item.description
+                </td>
+                
+                <td style="display:flex">
+                    <a asp-action="Edit"
+                        asp-route-id="@item.affectsID"
+                        asp-route-page="@Model.PagingInfo.CurrentPage"
+                        asp-route-sort="@Model.PagingInfo.Sort"
+                        asp-route-ascending="@Model.PagingInfo.Ascending"
+                        asp-route-returnUrl="@Url.Action("Index", "Affects", new { page = Model.PagingInfo.CurrentPage, sort = Model.PagingInfo.Sort, ascending = Model.PagingInfo.Ascending })"
+                        class="btn btn-primary" style="margin-right:10px">
+                            Edit
+                    </a>
+
+                    <form asp-action="Delete" method="post"
+                          asp-route-page="@Model.PagingInfo.CurrentPage"
+                          asp-route-sort="@Model.PagingInfo.Sort"
+                          asp-route-ascending="@Model.PagingInfo.Ascending">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="affectsID" value="@item.affectsID" />
+
+                        <button type="submit"
+                                class="btn btn-danger"
+                                title="Delete"
+                                onclick="return confirm('Are you sure you want to delete affects record #@item.affectsID?')">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<partial name="_Paging" model="Model.PagingInfo" />

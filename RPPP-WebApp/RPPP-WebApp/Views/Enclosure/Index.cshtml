@@ -1,0 +1,110 @@
+@model RPPP_WebApp.ViewModels.EnclosureViewModel
+
+@{
+    ViewData["Title"] = "Enclosure - Complex View";
+}
+
+<h1>Enclosure (Complex View)</h1>
+
+<a asp-action="Create" class="btn btn-primary" asp-route-page="@Model.PagingInfo.CurrentPage"
+                        asp-route-sort="@Model.PagingInfo.Sort" asp-route-ascending="@Model.PagingInfo.Ascending">Create New Enclosure</a>
+<a asp-action="ExportAllReportsPdf" class="btn btn-danger">
+        Download Full PDF Report
+    </a>
+    <a asp-action="ExportToExcel" class="btn btn-success">
+        Download Excel
+    </a>
+<pager page-info="@Model.PagingInfo" page-action="Index" page-title="Enter page" class="float-end">
+</pager>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-route-sort="1" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 1 ? !Model.PagingInfo.Ascending : true)">
+                    Enclosure Id
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="2" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 2 ? !Model.PagingInfo.Ascending : true)">
+                    Name
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="3" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 3 ? !Model.PagingInfo.Ascending : true)">
+                    Dimensions
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="4" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 4 ? !Model.PagingInfo.Ascending : true)">
+                    Change
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="5" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 5 ? !Model.PagingInfo.Ascending : true)">
+                    Lighting
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="6" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 6 ? !Model.PagingInfo.Ascending : true)">
+                    Shading
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="7" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 7 ? !Model.PagingInfo.Ascending : true)">
+                    Locations
+                </a>
+            </th>
+            <th>
+                <a asp-route-sort="8" asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-ascending="@(Model.PagingInfo.Sort == 8 ? !Model.PagingInfo.Ascending : true)">
+                    AnimalTypes
+                </a>
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var enclosure in Model.Enclosures)
+        {
+            <tr>
+                <td>@enclosure.EnclosureID</td>
+                <td>@enclosure.Name</td>
+                <td>@enclosure.Dimensions</td>
+                <td>@enclosure.Change</td>
+                <td>@enclosure.Lighting</td>
+                <td>@enclosure.Shading</td>
+                <td>@enclosure.LocationName</td>
+                <td>@enclosure.AnimalTypes</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@enclosure.EnclosureID" asp-route-page="@Model.PagingInfo.CurrentPage"
+                        asp-route-sort="@Model.PagingInfo.Sort" asp-route-ascending="@Model.PagingInfo.Ascending"
+                        class="btn btn-warning" title="Edit">Edit</a>
+
+                    <form asp-action="Delete" asp-route-id="@enclosure.EnclosureID"
+                        asp-route-page="@Model.PagingInfo.CurrentPage" asp-route-sort="@Model.PagingInfo.Sort"
+                        asp-route-ascending="@Model.PagingInfo.Ascending" method="post" style="display:inline;">
+                        <input type="hidden" name="returnAction" value="Index" />
+                        <button type="submit" class="btn btn-danger delete" data-name="@enclosure.Name">
+                            Delete
+                        </button>
+                    </form>
+
+                    <a asp-action="MasterDetail" asp-route-id="@enclosure.EnclosureID"
+                        class="btn btn-info" title="Details">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts {
+    <script src="~/js/pager.js" asp-append-version="true"></script>
+}

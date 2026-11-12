@@ -1,0 +1,62 @@
+@model RPPP_WebApp.ViewModels.ExpenseIndexViewModel
+
+<h2>Expenses</h2>
+
+<a asp-action="Create"
+   asp-route-taskId="@Model.TaskId"
+   class="btn btn-primary">
+    Create New Expense
+</a>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var e in Model.Expenses)
+{
+        <tr>
+            <td>@e.Type</td>
+            <td>@e.ArrivalDate.ToShortDateString()</td>
+            <td>@e.Description</td>
+            <td>@e.PriceAmount</td>
+            <td>
+                <a asp-action="Details" asp-route-id="@e.ExpenseID">Detail</a>
+                <td>
+                    <a asp-action="Edit" 
+                    asp-route-id="@e.ExpenseID" 
+                    asp-route-taskId="@Model.TaskId"
+                    asp-route-page="@Model.PagingInfo.CurrentPage"
+                    asp-route-sort="@Model.PagingInfo.Sort" 
+                    asp-route-ascending="@Model.PagingInfo.Ascending"
+                    class="btn btn-warning" 
+                    title="Edit">Edit</a>
+
+                    <form asp-action="Delete" 
+                        asp-route-id="@e.ExpenseID"
+                        asp-route-taskId="@Model.TaskId"
+                        asp-route-page="@Model.PagingInfo.CurrentPage" 
+                        asp-route-sort="@Model.PagingInfo.Sort"
+                        asp-route-ascending="@Model.PagingInfo.Ascending" 
+                        method="post" 
+                        style="display:inline;">
+                        <input type="hidden" name="id" value="@e.ExpenseID" />
+                        <button type="submit" 
+                                class="btn btn-danger delete" 
+                                data-name="@e.Type">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

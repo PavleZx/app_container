@@ -1,0 +1,117 @@
+@model RPPP_WebApp.ViewModels.PagedList<RPPP_WebApp.Model.IncidentReport>
+
+@{
+    ViewData["Title"] = "Incident Reports";
+ }
+
+<h2>Incident Reports</h2>
+
+<a asp-action="Create" class="btn btn-primary" 
+   asp-route-page="@Model.PagingInfo.CurrentPage"
+   asp-route-sort="@Model.PagingInfo.Sort" 
+   asp-route-ascending="@Model.PagingInfo.Ascending"
+   asp-route-returnUrl="@Url.Action("Index", new { page = Model.PagingInfo.CurrentPage, sort = Model.PagingInfo.Sort, ascending = Model.PagingInfo.Ascending })">
+   Add New Incident Report
+</a>
+<a asp-action="ExportAllReportsPdf" class="btn btn-danger">
+        Download Full PDF Report
+    </a>
+    <a asp-action="ExportToExcel" class="btn btn-success">
+        Download Excel
+    </a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sort="1"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 1 ? !Model.PagingInfo.Ascending : true)">
+                    #
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sort="2"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 2 ? !Model.PagingInfo.Ascending : true)">
+                    Date Reported
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sort="3"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 3 ? !Model.PagingInfo.Ascending : true)">
+                    Date Solved
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sort="4"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 4 ? !Model.PagingInfo.Ascending : true)">
+                    Status
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sort="5"
+                   asp-route-ascending="@(Model.PagingInfo.Sort == 5 ? !Model.PagingInfo.Ascending : true)">
+                    Type
+                </a>
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Data) 
+        {
+            <tr>
+                <td>@item.ReportID</td>
+                
+                <td>@(item.DateReport.HasValue ? item.DateReport.Value.ToShortDateString() : "—")</td>
+                
+                <td>
+                    @(item.DateSolved.HasValue 
+                        ? item.DateSolved.Value.ToShortDateString() 
+                        : "—")
+                </td>
+                
+                <td>@item.Status</td>
+                
+                <td>
+                    @(item.IncidentType != null 
+                        ? item.IncidentType.incidentType 
+                        : "—")
+                </td>
+                
+                <td style="display:flex">
+                    <a asp-action="MasterDetail" asp-route-id="@item.ReportID"
+                        class="btn btn-warning" title="Details" style="margin-right:10px">
+                        Details</a>
+
+                    <a asp-action="Edit"
+                       asp-route-id="@item.ReportID"
+                       asp-route-page="@Model.PagingInfo.CurrentPage"
+                       asp-route-sort="@Model.PagingInfo.Sort"
+                       asp-route-ascending="@Model.PagingInfo.Ascending"
+                       class="btn btn-primary" style="margin-right:10px">
+                        Edit
+                    </a>
+
+                    <form asp-action="Delete"
+                          method="post"
+                          asp-route-page="@Model.PagingInfo.CurrentPage"
+                          asp-route-sort="@Model.PagingInfo.Sort"
+                          asp-route-ascending="@Model.PagingInfo.Ascending">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" name="reportID" value="@item.ReportID" />
+
+                        <button type="submit"
+                                class="btn btn-danger"
+                                title="Delete"
+                                onclick="return confirm('Are you sure you want to delete report #@item.ReportID?')">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<partial name="_Paging" model="Model.PagingInfo" />
